@@ -11,7 +11,7 @@ const AddNewEvent = (eventFilter , provider , cb) =>{
 
 }
 
-export const createEventListner =({provider , walletAddress , contract , setShowAlert , navigate}) =>{
+export const createEventListner =({provider , walletAddress , contract , setShowAlert , navigate , setUpdateGameData}) =>{
     const NewPlayerEventFilter = contract.filters.NewPlayer();
 
     AddNewEvent(NewPlayerEventFilter , provider , ({args}) =>{
@@ -23,5 +23,13 @@ export const createEventListner =({provider , walletAddress , contract , setShow
                 mesage:"Player has been successfully registered"
             })
         }
+    });
+
+    const NewBattleEventFilter = contract.filters.NewBattle();
+    AddNewEvent(NewBattleEventFilter, provider , ({args}) => {
+        if(walletAddress.toLowerCase()===args.player1.toLowerCase()|| walletAddress.toLowerCase() === args.player2.toLowerCase()){
+            navigate(`/battle/${args.battleName}`)
+        }
+        setUpdateGameData((prev) => prev+1)
     })
 }

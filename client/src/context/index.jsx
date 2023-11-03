@@ -16,9 +16,11 @@ export const GlobalContextProvider = ({ children }) => {
   const [contract, setContract] = useState(null);
   const [provider, setProvider] = useState(null);
   const [showAlert, setShowAlert] = useState({status:false,message:'',type:'info'});
-
-
-
+  const [battleName , setBattleName] = useState('');
+const [gameData , setGameData] = useState({
+  players:[], pendingBattles:[], activeBattle:null
+})
+const [updateGameData, setUpdateGameData] = useState(0)
   const navigate = useNavigate();
 
 
@@ -71,7 +73,28 @@ useEffect(()=>{
 
 },[setShowAlert])
 
+// get the game data of all the battles
+useEffect(()=>{
+const fetchGameData = async () =>{
 
+  const fetchBattleData = await contract.getAllBattles();
+  const pendingBattles = await fetchBattleData.filter((battle) => battle.battleStatus === 0)
+  let activeBattle = null;
+
+  fetchBattleData.forEach((battle) => {
+    if(battle.players.find((player) => player.toLowerCase() === walletAddress.toLowerCase())) {
+      if(battle.winner.startsWith('0x00')){
+        activeBattle=battle;
+      }
+    }
+  })
+
+setGameData({pendingBattles: pendingBattles.slice(1), activeBattle})
+
+
+}
+if(contract) fetchGameData();
+},[contract , updateGameData])
   return (
     <GlobalContext.Provider
       value={{
@@ -79,7 +102,11 @@ useEffect(()=>{
         contract,
         walletAddress,
         setShowAlert,
-        showAlert
+        showAlert,
+        battleName,
+        setBattleName,
+        gameData,
+        setUpdateGameData
 
 
       }}
