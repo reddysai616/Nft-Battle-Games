@@ -20,7 +20,9 @@ export const GlobalContextProvider = ({ children }) => {
 const [gameData , setGameData] = useState({
   players:[], pendingBattles:[], activeBattle:null
 })
-const [updateGameData, setUpdateGameData] = useState(0)
+const [updateGameData, setUpdateGameData] = useState(0);
+
+const [battleGround , setBattleGround] = useState('bg-astral');
   const navigate = useNavigate();
 
 
@@ -106,7 +108,9 @@ if(contract) fetchGameData();
         battleName,
         setBattleName,
         gameData,
-        setUpdateGameData
+        setUpdateGameData,
+        setBattleGround,
+        battleGround,
 
 
       }}
