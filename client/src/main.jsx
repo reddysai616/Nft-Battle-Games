@@ -15,7 +15,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <Route path="/" element={<Home />} />
       <Route path="/create-battle" element={<CreateBattle/>}/>
       <Route path="/join-battle" element={<JoinBattles/>}/>
-      <Route path="/battle:battleName" element={<Battle/>}/>
+      <Route path="/battle/:battleName" element={<Battle/>}/>
 
 
     </Routes>
