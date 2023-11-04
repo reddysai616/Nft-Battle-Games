@@ -16,7 +16,7 @@ useEffect(()=>{
     setWaitBattle(true);
   }
 },[gameData])
-console.log( gameData?.pendingBattle[0] , 'test data')
+// console.log( gameData?.pendingBattle[0] , 'test data')
 
   const handleClick = async () => {
     if (battleName === '' || battleName.trim() === '') return null;
