@@ -30,6 +30,8 @@ export const createEventListner =({provider , walletAddress , contract , setShow
         if(walletAddress.toLowerCase()===args.player1.toLowerCase()|| walletAddress.toLowerCase() === args.player2.toLowerCase()){
             navigate(`/battle/${args.battleName}`)
         }
-        setUpdateGameData((prev) => prev+1)
+        setUpdateGameData((prev) => prev+1) 
     })
+
+    
 }
