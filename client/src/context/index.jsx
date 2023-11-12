@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { ABI, ADDRESS } from '../contract';
 import {createEventListner} from './createEventListner';
+import { GetParams } from '../utils/onboard';
 
 
 const GlobalContext = createContext();
@@ -23,7 +24,50 @@ const [gameData , setGameData] = useState({
 const [updateGameData, setUpdateGameData] = useState(0);
 
 const [battleGround , setBattleGround] = useState('bg-astral');
+const [step , setStep] = useState(1);
+const [errorMessage , setErrorMessage] = useState('');
   const navigate = useNavigate();
+  const player1Ref = useRef();
+  const player2Ref = useRef();
+
+
+useEffect(() => {
+  const battleGroundFromLocal = localStorage.getItem('battleground')
+  if(battleGroundFromLocal){
+    setBattleGround(battleGroundFromLocal)
+  }else {
+    localStorage.setItem('battleground', battleGround)
+
+  }
+
+},[]);
+
+useEffect(()=>{
+  const resetParams = async () => {
+    const currentStep = await GetParams();
+    setStep(currentStep.step);
+  }
+resetParams();
+window?.ethereum?.on('chainChanged' , () => resetParams());
+window?.ethereum?.on('accounChanged' , () => resetParams ());
+},[])
+
+
+
+
+useEffect(() => {
+  if(errorMessage) {
+    const parseErrorMessage = errorMessage?.reason?.slice('excution reverted:'.length).slice(0,-1);
+    if(parseErrorMessage){
+      setShowAlert({
+        status:true ,
+        type:'failure',
+        message:parseErrorMessage
+      })
+    }
+  }
+
+}, [errorMessage])
 
 
 
@@ -58,10 +102,10 @@ const [battleGround , setBattleGround] = useState('bg-astral');
     setSmartContractAndProvider();
   }, []);
 useEffect(()=>{
-  if(contract){
-    createEventListner({provider , walletAddress , contract,setShowAlert , navigate})
+  if( step !== -1 && contract){
+    createEventListner({provider , walletAddress , contract,setShowAlert , navigate ,player1Ref ,player2Ref})
   }
-},[contract])
+},[contract  ,step])
 
 useEffect(()=>{
     if(showAlert?.status){
@@ -111,6 +155,9 @@ if(contract) fetchGameData();
         setUpdateGameData,
         setBattleGround,
         battleGround,
+        setErrorMessage,
+        player1Ref,
+        player2Ref
 
 
       }}
