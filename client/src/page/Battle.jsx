@@ -16,7 +16,7 @@ import styles from '../styles/index.js'
 
 
 const Battle = () => {
-    const {contract , gameData , walletAddress ,showAlert , setShowAlert , battleGround ,setBattleGround} = useGlobalContext();
+    const {contract , gameData , walletAddress ,showAlert , setShowAlert , battleGround ,setBattleGround , setErrorMessage ,player1Ref , player2Ref} = useGlobalContext();
     const[player1 , setPlayer1] = useState({});
     const[player2 , setPlayer2] = useState({});
     const {battleName} = useParams();
@@ -56,13 +56,34 @@ const Battle = () => {
 
 
       } catch (error) {
-        console.log(error);
+        setErrorMessage(error)
       }
 
     }
     if(contract && gameData.activeBattle) getPlayerInfo();
   },[contract,gameData,])
+const makeMove = async (choice) => {
+  playAudio(choice ===1 ? attackSound : defenseSound)
+  try {
+    await contract.attackOrDefendChoice(choice ,battleName)
 
+    setShowAlert({
+      status:true,
+      type:'info',
+      message:`initiating ${choice == 1 ? 'attack' : 'defend'}`
+    })
+    
+  } catch (error) {
+    setErrorMessage(error)
+  }
+}
+
+useEffect(()=>{
+  const timer = setTimeout(()=>{
+    if(!gameData?.activeBattle) navigate('/')
+  },[3000])
+return ()=> clearTimeout(timer)
+})
 
   return (
     <div className={`${styles.flexBetween} ${styles.gameContainer} ${battleGround}`}>
@@ -76,24 +97,24 @@ const Battle = () => {
         <Card
         card={player2}
         title={player2?.playerName}
-        cardRef=''
+        cardRef={player2Ref}
         playerTwo
         />
         <div className='flex items-center flex-row'>
         <ActionButton
         imgUrl={attack}
-        handleClick={()=>{}}
+        handleClick={()=>makeMove(1)}
         resStyles='mr-2 hover:border-yellow-400'
         />
            <Card
         card={player1}
         title={player1?.playerName}
-        cardRef=''
+        cardRef={player1Ref}
        resStyles='mt-3'
         />
           <ActionButton
         imgUrl={attack}
-        handleClick={()=>{}}
+        handleClick={()=>makeMove(2)}
         resStyles='ml-6 hover:border-red-600'
         />
         </div>
