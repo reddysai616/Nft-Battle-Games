@@ -7,10 +7,12 @@ import ActionButton from "./ActionButton";
 import GameInfo from "./GameInfo";
 import PlayerInfo from "./PlayerInfo";
 import Card from "./Card";
+import OnboardModal from "./OnboardModal";
 
 
 
 
 
 
-export {PageHOC ,CustomInput , CustomButton , Alert,GameLoad , Card ,PlayerInfo, ActionButton,GameInfo}
+
+export {PageHOC ,CustomInput , CustomButton , Alert,GameLoad , Card ,PlayerInfo, ActionButton,GameInfo , OnboardModal}
